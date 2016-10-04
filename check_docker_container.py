@@ -160,8 +160,6 @@ def get_stats(socket, container):
     for io_counter in statuses['io_kb_counters'].keys():
         # Weird stuff, new drive attached ?
         if not 'io_kb_counters' in previous_statuses or not io_counter in previous_statuses['io_kb_counters']:
-            print('---')
-            print(io_counter)
             raise Exception("New IO counter %s found, creating buffer..." % io_counter)
         else:
             io_counter_delta = statuses['io_kb_counters'][io_counter] - previous_statuses['io_kb_counters'][io_counter]
