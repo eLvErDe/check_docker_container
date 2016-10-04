@@ -75,7 +75,7 @@ def parse_args():
 @tb2unknown
 def get_stats(socket, container):
 
-    docker_cli = docker.Client(base_url='unix:/%s' % socket)
+    docker_cli = docker.Client(base_url='unix:/%s' % socket, version='auto')
 
     containers = docker_cli.containers(all=True)
     containers = [ x for x in containers if '/%s' % container in x['Names']  ]
