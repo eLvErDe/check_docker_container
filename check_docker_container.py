@@ -138,7 +138,7 @@ def get_stats(socket, container):
     network_out_kb = int(round((statuses['network_out_kb_counter'] - previous_statuses['network_out_kb_counter']) * 8 / (now - previous_now)))
     container_cpu_cycles_delta = statuses['container_cpu_cycles_counter'] - previous_statuses['container_cpu_cycles_counter']
     total_cpu_cycles_delta = statuses['total_cpu_cycles_counter'] - previous_statuses['total_cpu_cycles_counter']
-    cpu_percentage = int(round(container_cpu_cycles_delta / total_cpu_cycles_delta * 100))
+    cpu_percentage = round(container_cpu_cycles_delta / total_cpu_cycles_delta * 100, 2)
   
     output = 'OK | traffic_in=%dKBits/s, traffic_out=%dKBits/s, memory_usage=%dKB;;;;%d, cpu_usage=%d%%' % (network_in_kb, network_out_kb, memory_usage_mb, memory_limit_mb, cpu_percentage)
     print(output)
