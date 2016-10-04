@@ -6,6 +6,7 @@ import shutil
 import stat
 import time
 import argparse
+import json
 from ast import literal_eval
 try:
     import docker
@@ -88,7 +89,11 @@ def get_stats(socket, container):
         print("CRITICAL: Container %s is not running: %s" % (container, state))
         sys.exit(2)
 
-    stats = docker_cli.stats(container, stream=False)
+    # I should be able to use stream=False but it doesn't seem to work properly
+    stats = docker_cli.stats(container)
+    for x in stats:
+        stats = json.loads(str(x, 'utf-8'))
+        break
 
     now = int(round(time.time()))
 
