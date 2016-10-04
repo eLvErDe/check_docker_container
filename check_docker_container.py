@@ -106,14 +106,28 @@ def get_stats(socket, container):
     container_cpu_cycles_counter = int(round(stats['cpu_stats']['cpu_usage']['total_usage']))
     total_cpu_cycles_counter =  int(round(stats['cpu_stats']['system_cpu_usage']))
 
+    io_kb_counters = {}
+    try:
+        io_service_bytes_recursive = stats['blkio_stats']['io_service_bytes_recursive']
+        for io_stat in io_service_bytes_recursive:
+            op = io_stat['op'].lower()
+            value = int(round(io_stat['value'] / 1024))
+            major = io_stat['major']
+            minor = io_stat['minor']
+            device = os.path.basename(os.path.realpath(os.path.join('/sys/dev/block', '%s:%s' % (major, minor))))
+            io_kb_counters['%s_%s' % (op, device)] = value
+    except KeyError:
+        pass
+
     # TODO FIXME
-    # "blkio_stats" is completly empty here...
+    # Handle io_queue_recursive
 
     statuses = { 'timestamp': now,
                  'network_in_kb_counter': network_in_kb_counter,
                  'network_out_kb_counter': network_out_kb_counter,
                  'container_cpu_cycles_counter': container_cpu_cycles_counter,
                  'total_cpu_cycles_counter': total_cpu_cycles_counter,
+                 'io_kb_counters': io_kb_counters,
                }
 
     status_file = '/tmp/check_docker_container_py_%s.stats' % container
@@ -141,6 +155,18 @@ def get_stats(socket, container):
     cpu_percentage = round(container_cpu_cycles_delta / total_cpu_cycles_delta * 100, 2)
   
     output = 'OK | traffic_in=%dKBits/s, traffic_out=%dKBits/s, memory_usage=%dKiB;;;0;%d, cpu_usage=%.2f%%' % (network_in_kb, network_out_kb, memory_usage_mb, memory_limit_mb, cpu_percentage)
+
+    # Dynamic list of IO counters
+    for io_counter in statuses['io_kb_counters'].keys():
+        # Weird stuff, new drive attached ?
+        if not 'io_kb_counters' in previous_statuses or not io_counter in previous_statuses['io_kb_counters']:
+            print('---')
+            print(io_counter)
+            raise Exception("New IO counter %s found, creating buffer..." % io_counter)
+        else:
+            io_counter_delta = statuses['io_kb_counters'][io_counter] - previous_statuses['io_kb_counters'][io_counter]
+            io_counter_kb = int(round(io_counter_delta / (now - previous_now)))
+            output += ', %s=%sKiB/s' % (io_counter, io_counter_kb)
     print(output)
     sys.exit(0)
 
