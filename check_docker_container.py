@@ -14,8 +14,8 @@ except ImportError:
     print('UNKNWON: python3-docker package is not installed')
     sys.exit(3)
 from distutils.version import LooseVersion
-if LooseVersion(docker.version) < LooseVersion('1.6.0'):
-   print('UNKNWON: python3-docker is too old (%s < 1.6.0', docker.version)
+if LooseVersion(docker.version) < LooseVersion('1.0.0'):
+   print('UNKNWON: python3-docker is too old (%s < 1.0.0', docker.version)
    sys.exit(3)
 from functools import wraps
 
