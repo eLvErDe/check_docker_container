@@ -155,7 +155,7 @@ def get_stats(socket, container):
     total_cpu_cycles_delta = statuses['total_cpu_cycles_counter'] - previous_statuses['total_cpu_cycles_counter']
     cpu_percentage = round(container_cpu_cycles_delta / total_cpu_cycles_delta * 100, 2)
   
-    output = 'OK %s: %s | traffic_in=%dKBits/s, traffic_out=%dKBits/s, memory_usage=%dKiB, cpu_usage=%.2f%%' % (container, state, network_in_kb, network_out_kb, memory_usage_mb, cpu_percentage)
+    output = 'OK %s: %s | traffic_in=%dKBits/s, traffic_out=%dKBits/s, memory_usage=%dMiB, cpu_usage=%.2f%%' % (container, state, network_in_kb, network_out_kb, memory_usage_mb, cpu_percentage)
 
     # Dynamic list of IO counters
     for io_counter in statuses['io_kb_counters'].keys():
