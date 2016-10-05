@@ -46,7 +46,7 @@ Otherwise you can create multiple NRPE commands with fixed container name.
 
 # Screenshot
 
-WIP
+![Alt screenshot](/centreon_check_docker_container.png?raw=true)
 
 
 # TODO
