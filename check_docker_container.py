@@ -111,6 +111,8 @@ def get_stats(socket, container):
         io_service_bytes_recursive = stats['blkio_stats']['io_service_bytes_recursive']
         for io_stat in io_service_bytes_recursive:
             op = io_stat['op'].lower()
+            if op not in [ 'read', 'write' ]:
+                continue
             value = int(round(io_stat['value'] / 1024))
             major = io_stat['major']
             minor = io_stat['minor']
