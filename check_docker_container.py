@@ -149,8 +149,10 @@ def get_stats(socket, container):
     # Compute stats with previous and current values
     now = int(statuses['timestamp'])
     previous_now = int(previous_statuses['timestamp'])
-    network_in_kb = int(round((statuses['network_in_kb_counter'] - previous_statuses['network_in_kb_counter']) * 8 / (now - previous_now)))
-    network_out_kb = int(round((statuses['network_out_kb_counter'] - previous_statuses['network_out_kb_counter']) * 8 / (now - previous_now)))
+    network_in_kb_delta = statuses['network_in_kb_counter'] - previous_statuses['network_in_kb_counter']
+    network_out_kb_delta = statuses['network_out_kb_counter'] - previous_statuses['network_out_kb_counter']
+    network_in_kb = int(round(network_in_kb_delta * 8 / (now - previous_now)))
+    network_out_kb = int(round(network_out_kb_delta * 8 / (now - previous_now)))
     container_cpu_cycles_delta = statuses['container_cpu_cycles_counter'] - previous_statuses['container_cpu_cycles_counter']
     total_cpu_cycles_delta = statuses['total_cpu_cycles_counter'] - previous_statuses['total_cpu_cycles_counter']
     cpu_percentage = round(container_cpu_cycles_delta / total_cpu_cycles_delta * 100, 2)
