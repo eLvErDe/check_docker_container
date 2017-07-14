@@ -99,9 +99,15 @@ def get_stats(socket, container):
 
     memory_usage_mb = int(round(stats['memory_stats']['usage'] / 1000 / 1000))
 
-    network_in_kb_counter = int(round(stats['network']['rx_bytes'] / 1024))
-    network_out_kb_counter = int(round(stats['network']['tx_bytes'] / 1024))
-   
+    # Newer dockerd
+    # TODO FIXME: Handle multiple interfaces
+    if 'networks' in stats:
+        network_in_kb_counter = int(round(stats['networks']['eth0']['rx_bytes'] / 1024))
+        network_out_kb_counter = int(round(stats['networks']['eth0']['tx_bytes'] / 1024))
+    else:
+        network_in_kb_counter = int(round(stats['network']['rx_bytes'] / 1024))
+        network_out_kb_counter = int(round(stats['network']['tx_bytes'] / 1024))
+
     container_cpu_cycles_counter = int(round(stats['cpu_stats']['cpu_usage']['total_usage']))
     total_cpu_cycles_counter =  int(round(stats['cpu_stats']['system_cpu_usage']))
 
@@ -156,7 +162,7 @@ def get_stats(socket, container):
     container_cpu_cycles_delta = statuses['container_cpu_cycles_counter'] - previous_statuses['container_cpu_cycles_counter']
     total_cpu_cycles_delta = statuses['total_cpu_cycles_counter'] - previous_statuses['total_cpu_cycles_counter']
     cpu_percentage = round(container_cpu_cycles_delta / total_cpu_cycles_delta * 100, 2)
-  
+
     output = 'OK %s: %s | traffic_in=%dKBits/s traffic_out=%dKBits/s memory_usage=%dMiB cpu_usage=%.2f%%' % (container, state, network_in_kb, network_out_kb, memory_usage_mb, cpu_percentage)
 
     # Dynamic list of IO counters
