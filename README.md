@@ -48,6 +48,8 @@ Otherwise you can create multiple NRPE commands with fixed container name.
 
 ![Alt screenshot](/centreon_check_docker_container.png?raw=true)
 
+![Alt2 screenshot](/perf_data_in_centreon.png?raw=true)
+
 
 # TODO
 
